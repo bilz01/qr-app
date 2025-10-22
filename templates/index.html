@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NID QR Code Verification System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { background: #f0f0f0; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .admin-section { background: #e8f4fd; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .endpoint { background: #fff; padding: 10px; margin: 5px 0; border-left: 4px solid #007bff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NID QR Code Verification System</h1>
+        <p>Scan a QR code to verify its authenticity.</p>
+        
+        <div class="info">
+            <h3>Verification Endpoints:</h3>
+            <div class="endpoint">
+                <strong>Web Verification:</strong> <code>/verify/&lt;qr_id&gt;</code><br>
+                <em>User-friendly web interface</em>
+            </div>
+            <div class="endpoint">
+                <strong>API Verification:</strong> <code>/api/verify/&lt;qr_id&gt;</code><br>
+                <em>JSON API for programmatic access</em>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h3>Admin & Analytics Endpoints:</h3>
+            <div class="endpoint">
+                <strong>Access Logs:</strong> <code>/api/access_logs</code><br>
+                <em>Get all access logs (use ?qr_id=XXX to filter)</em>
+            </div>
+            <div class="endpoint">
+                <strong>Access Statistics:</strong> <code>/api/access_stats</code><br>
+                <em>Get comprehensive scan statistics</em>
+            </div>
+            <div class="endpoint">
+                <strong>QR Codes List:</strong> <code>/api/qr_codes</code><br>
+                <em>Get all QR codes with scan counts</em>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

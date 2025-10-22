@@ -1,0 +1,60 @@
+1. To run app as service create qr-flask-app.service in /etc/systemd/system
+
+[Unit]
+Description=QR code flask app
+After=network.target
+
+[Service]
+WorkingDirectory=/nid/qr-app
+Environment=FLASK_APP=app.py
+Environment=FLASK_ENV=production
+ExecStart=/usr/bin/python3.11 -m flask run --host=0.0.0.0 --port=5040
+User=root
+Type=simple
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+
+
+To runn app behind nginx reverse proxy for https support... use following virtual directory configuration snippet...
+
+location /qr-app/ {
+    proxy_pass http://127.0.0.1:5040/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Prefix /qr-app;
+    
+    # Important: Handle all paths under /qr-app
+    location /qr-app/api/ {
+        proxy_pass http://127.0.0.1:5040/api/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    
+    # Timeout settings
+    proxy_connect_timeout 30s;
+    proxy_send_timeout 30s;
+    proxy_read_timeout 30s;
+    
+    # Optional: CORS headers
+    add_header Access-Control-Allow-Origin *;
+    add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
+    add_header Access-Control-Allow-Headers 'Origin, Content-Type, Accept, Authorization';
+    
+    # Handle preflight requests
+    if ($request_method = OPTIONS) {
+        return 204;
+    }
+}
+
+
+user commandline to generate QR code images/entry /nid/qr-app/python3.11 qr-generator.py it will take you to interactive menu.. there you can provide the description data.

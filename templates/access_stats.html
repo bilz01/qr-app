@@ -1,0 +1,43 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Access Stats{% endblock %}
+{% block header %}Access Statistics{% endblock %}
+{% block content %}
+
+    <div style="display:flex; gap:12px;">
+        <div style="flex:1; background:#f9f9f9; padding:12px; border-radius:6px;"><strong>Total scans:</strong> {{ total_scans }}</div>
+        <div style="flex:1; background:#f9f9f9; padding:12px; border-radius:6px;"><strong>Scans today:</strong> {{ scans_today }}</div>
+        <div style="flex:1; background:#f9f9f9; padding:12px; border-radius:6px;"><strong>Unique QR codes scanned:</strong> {{ unique_qr_codes }}</div>
+    </div>
+
+    <h2>Most scanned QR codes</h2>
+    <table>
+        <thead><tr><th>QR ID</th><th>Count</th></tr></thead>
+        <tbody>
+        {% for item in most_scanned %}
+            <tr><td>{{ item.qr_id }}</td><td>{{ item.scan_count }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Scans by device type</h2>
+    <table>
+        <thead><tr><th>Device</th><th>Count</th></tr></thead>
+        <tbody>
+        {% for d in device_stats %}
+            <tr><td>{{ d.device_type }}</td><td>{{ d.count }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Scans by browser</h2>
+    <table>
+        <thead><tr><th>Browser</th><th>Count</th></tr></thead>
+        <tbody>
+        {% for b in browser_stats %}
+            <tr><td>{{ b.browser }}</td><td>{{ b.count }}</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

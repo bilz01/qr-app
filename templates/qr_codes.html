@@ -1,0 +1,30 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}QR Codes{% endblock %}
+{% block header %}QR Codes ({{ count }}){% endblock %}
+{% block content %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>QR ID</th>
+                <th>Description</th>
+                <th>Created At</th>
+                <th>Scan Count</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for q in qr_codes %}
+            <tr>
+                <td>{{ q.id }}</td>
+                <td>{{ q.qr_id }}</td>
+                <td>{{ q.description }}</td>
+                <td>{{ q.created_at or '' }}</td>
+                <td>{{ q.scan_count or 0 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

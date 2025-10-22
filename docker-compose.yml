@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: qr_verification
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3306:3306"
+
+  web:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: rootpassword
+      DB_NAME: qr_verification
+      ADMIN_CREDENTIALS: "admin:adminpass"
+      BASE_URL: http://localhost:5040/qr-app
+    ports:
+      - "5040:5040"
+    volumes:
+      - .:/app:delegated
+    command: gunicorn -w 2 -b 0.0.0.0:5040 wsgi:app
+
+volumes:
+  db_data:

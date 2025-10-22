@@ -1,0 +1,57 @@
+{% extends 'admin_base.html' %}
+
+{% block title %}Access Logs{% endblock %}
+{% block header %}Access Logs{% endblock %}
+{% block content %}
+
+<div class="meta">Showing {{ count }} records{% if qr_id_filter %} for QR ID: <strong>{{ qr_id_filter }}</strong>{% endif %}</div>
+
+<table>
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>QR ID</th>
+                <th>IP</th>
+                <th>Country / City</th>
+                <th>Endpoint</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Browser</th>
+                <th>Platform</th>
+                <th>Device</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for log in logs %}
+            <tr>
+                <td>{{ log.access_time or '' }}</td>
+                <td>{{ log.qr_id or '' }}</td>
+                <td>{{ log.ip_address or '' }}</td>
+                <td>{{ log.country or '' }} / {{ log.city or '' }}</td>
+                <td>{{ log.endpoint or '' }}</td>
+                <td>{{ log.http_method or '' }}</td>
+                <td>{{ log.status_code or '' }}</td>
+                <td>{{ log.browser or '' }}</td>
+                <td>{{ log.platform or '' }}</td>
+                <td>{{ log.device_type or '' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if pagination %}
+    <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div class="small">Page {{ pagination.page }} of {{ pagination.total_pages }} — Total {{ pagination.total }} records</div>
+        <div>
+            {% if pagination.has_prev %}
+                <a class="muted" href="?page={{ pagination.page - 1 }}&per_page={{ pagination.per_page }}{% if qr_id_filter %}&qr_id={{ qr_id_filter }}{% endif %}">← Prev</a>
+            {% endif %}
+            {% if pagination.has_next %}
+                {% if pagination.has_prev %} &nbsp; | &nbsp; {% endif %}
+                <a class="muted" href="?page={{ pagination.page + 1 }}&per_page={{ pagination.per_page }}{% if qr_id_filter %}&qr_id={{ qr_id_filter }}{% endif %}">Next →</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}
