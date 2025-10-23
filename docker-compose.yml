@@ -3,9 +3,11 @@ services:
   db:
     image: mysql:8.0
     restart: always
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: qr_verification
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     volumes:
       - db_data:/var/lib/mysql
       - ./docker/mysql-init:/docker-entrypoint-initdb.d:ro
@@ -16,13 +18,15 @@ services:
     build: .
     depends_on:
       - db
+    env_file:
+      - .env
     environment:
       DB_HOST: db
-      DB_USER: root
-      DB_PASSWORD: rootpassword
-      DB_NAME: qr_verification
-      ADMIN_CREDENTIALS: "admin:adminpass"
-      BASE_URL: http://localhost:5040/qr-app
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      ADMIN_CREDENTIALS: ${ADMIN_CREDENTIALS}
+      BASE_URL: ${BASE_URL}
     ports:
       - "5040:5040"
     volumes:
