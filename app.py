@@ -150,14 +150,28 @@ def log_access(qr_id, endpoint, http_method, status_code):
         geo_info = get_geo_location(client_info['ip_address'])
         
         cursor = connection.cursor()
+
+        # Ensure we don't insert a qr_id that doesn't exist (avoids FK errors)
+        qr_id_to_insert = None
+        try:
+            if qr_id:
+                check_q = "SELECT 1 FROM qr_codes WHERE qr_id = %s"
+                cursor.execute(check_q, (qr_id,))
+                exists = cursor.fetchone()
+                if exists:
+                    qr_id_to_insert = qr_id
+        except Exception:
+            # If the check fails for any reason, fallback to NULL to avoid breaking logging
+            qr_id_to_insert = None
+
         query = """
         INSERT INTO api_access_logs 
         (qr_id, ip_address, user_agent, endpoint, http_method, status_code, country, city, browser, platform, device_type)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        
+
         cursor.execute(query, (
-            qr_id,
+            qr_id_to_insert,
             client_info['ip_address'],
             client_info['user_agent'],
             endpoint,
